@@ -1,36 +1,95 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Codex Next.js App
+
+This repository is a small Next.js application with an email/password authentication flow built with NextAuth, Prisma, and SQLite.
+
+## What Is Included
+
+- Next.js App Router with TypeScript and Tailwind CSS
+- Register and login pages
+- NextAuth Credentials provider
+- Prisma schema for users, accounts, sessions, and verification tokens
+- SQLite local development database
+- Protected dashboard page
+- Middleware protection for authenticated routes
+- Vitest coverage for the registration flow
+
+## Main Paths
+
+- `src/app/page.tsx` - home page with auth entry points
+- `src/app/register/page.tsx` - register page
+- `src/app/login/page.tsx` - login page
+- `src/app/dashboard/page.tsx` - protected dashboard
+- `src/app/api/auth/[...nextauth]/route.ts` - NextAuth API route
+- `src/app/api/auth/register/route.ts` - register API route
+- `src/lib/auth.ts` - NextAuth configuration
+- `src/lib/register.ts` - register business logic
+- `src/lib/prisma.ts` - shared Prisma client
+- `prisma/schema.prisma` - database schema
+- `prisma/migrations/20260519153000_init/migration.sql` - initial migration
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create a local environment file:
+
+```bash
+cp .env.example .env
+```
+
+Update `.env` if needed. For local SQLite development:
+
+```env
+DATABASE_URL="file:/absolute/path/to/this/repo/prisma/dev.db"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="replace-with-a-generated-secret"
+```
+
+Generate Prisma Client and apply migrations:
+
+```bash
+npm run db:migrate
+```
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Auth Flow
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Create an account at `/register`.
+2. The register API validates input, normalizes email, hashes the password, and creates a user with Prisma.
+3. Login uses NextAuth Credentials provider.
+4. `/dashboard` is protected and redirects unauthenticated users to `/login`.
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run dev        # Start development server
+npm run build      # Build production app
+npm run start      # Start production server
+npm run lint       # Run ESLint
+npm run test       # Run Vitest tests
+npm run db:generate
+npm run db:migrate
+npm run db:push
+npm run db:studio
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Local Files
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The following are intentionally ignored:
 
-## Deploy on Vercel
+- `.env` and other local environment files
+- `prisma/dev.db`
+- SQLite runtime files such as `prisma/dev.db-wal` and `prisma/dev.db-shm`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Use `.env.example` as the committed template.
